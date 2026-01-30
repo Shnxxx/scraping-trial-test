@@ -7,6 +7,10 @@ from selenium.webdriver.support import expected_conditions as EC
 import json
 import logging
 
+
+DEFAULT_SEARCH_TERM = "LLC"
+
+
 # -----------------------------
 # 1. LOGGING SETUP (REQUIRED)
 # -----------------------------
@@ -34,7 +38,14 @@ try:
     # 4. PERFORM SEARCH
     # -----------------------------
     search_input = driver.find_element(By.TAG_NAME, "input")
-    search_input.send_keys("LLC")
+    search_term = input(
+        f"Enter search term (min 3 chars) [default: {DEFAULT_SEARCH_TERM}]: "
+    ).strip()
+
+    if not search_term:
+        search_term = DEFAULT_SEARCH_TERM
+
+    search_input.send_keys(search_term)
 
     search_button = driver.find_element(By.TAG_NAME, "button")
     search_button.click()
