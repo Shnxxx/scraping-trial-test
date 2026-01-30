@@ -4,8 +4,10 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import csv
 import json
 import logging
+
 
 
 DEFAULT_SEARCH_TERM = "LLC"
@@ -132,6 +134,18 @@ try:
 
     logging.info(f"Scraping completed. Total records: {len(all_records)}")
     print(f"Done. Scraped {len(all_records)} records.")
+
+    # -----------------------------
+    # 8. SAVE OUTPUT (CSV)
+    # -----------------------------
+    with open("output.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["business_name", "registration_id", "status", "filing_date"]
+        )
+        writer.writeheader()
+        writer.writerows(all_records)
+
 
 finally:
     # -----------------------------
