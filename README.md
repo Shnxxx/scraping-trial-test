@@ -91,7 +91,8 @@ No prior programming experience is required to **run** the script.
    - ✔ Check **“Add Python to PATH”**
 5. Finish installation
 
-To verify:
+Verify installation:
+
 - Open **Command Prompt** (Windows) or **Terminal** (macOS/Linux)
 - Type:
 ```bash
@@ -107,7 +108,38 @@ python --version
 
 ---
 
-### Step 3: Open a Terminal / Command Prompt
+### Step 3: Install GeckoDriver (Required)
+
+GeckoDriver allows Python to control the Firefox browser.
+
+1. Go to:
+   https://github.com/mozilla/geckodriver/releases
+2. Download the version for your operating system
+3. Extract the file
+
+#### Add GeckoDriver to PATH (Recommended)
+
+- **Windows**:
+  - Place `geckodriver.exe` in:
+    ```
+    C:\Windows\
+    ```
+  OR add its folder to your system PATH
+
+- **macOS / Linux**:
+  ```bash
+  sudo mv geckodriver /usr/local/bin/
+  sudo chmod +x /usr/local/bin/geckodriver
+  ```
+
+Verify:
+```bash
+geckodriver --version
+```
+
+---
+
+### Step 4: Open a Terminal / Command Prompt
 
 - **Windows**:
   - Press `Windows + R`
@@ -126,9 +158,9 @@ All commands below are typed **inside this window**.
 
 ---
 
-### Step 4: Download the Project (Clone the Repository)
+### Step 5: Download the Project (Clone the Repository)
 
-In the terminal window, type **exactly**:
+In the terminal window, type:
 
 ```bash
 git clone https://github.com/Shnxxx/scraping-trial-test.git
@@ -136,7 +168,7 @@ git clone https://github.com/Shnxxx/scraping-trial-test.git
 
 Then press **Enter**.
 
-Next, move into the project folder:
+Move into the project folder:
 
 ```bash
 cd scraping-trial-test
@@ -144,11 +176,7 @@ cd scraping-trial-test
 
 ---
 
-### Step 5 (Optional but Recommended): Create a Virtual Environment
-
-This keeps dependencies isolated.
-
-Type:
+### Step 6 (Optional but Recommended): Create a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -166,31 +194,29 @@ Activate it:
 source .venv/bin/activate
 ```
 
-You will see `(.venv)` appear in the terminal.
+You will see `(.venv)` in the terminal.
 
 ---
 
-### Step 6: Install Required Libraries
-
-Still in the terminal, type:
+### Step 7: Install Required Libraries
 
 ```bash
 pip install selenium
 ```
 
-Press Enter and wait until installation finishes.
-
 ---
 
 ## How to Run the Script
 
-In the same terminal window, inside the project folder, type:
+From inside the project folder, type:
 
 ```bash
 python scraper.py
 ```
 
-### What Will Happen
+---
+
+## What Will Happen
 
 1. Firefox opens automatically
 2. A CAPTCHA appears
@@ -209,15 +235,15 @@ python scraper.py
 ## Search Term Rules
 
 - Minimum of **3 characters**
-- Empty searches are not allowed by the site
+- Empty searches are not allowed
 - Wildcard searches are not supported
 
-Default search term:
+Default:
 ```
 LLC
 ```
 
-The user may enter other valid terms such as:
+Other valid examples:
 ```
 Tech
 Silver TECH
@@ -228,31 +254,31 @@ Silver TECH
 ## Pagination Handling
 
 - The site displays results across multiple pages (e.g. “Page 1 of 25”)
-- The script detects page changes using stable UI text
+- Page transitions are detected using stable UI text
 - All pages are processed automatically
 
 ---
 
 ## Error Handling & Logging
 
-- Dynamic loading is handled using explicit waits
+- Explicit waits handle dynamic content
 - Optional fields (agent email) are handled safely
 - Errors are logged to:
 ```
 scraper.log
 ```
-- A failed business does **not** stop the script
+- One failed business does not stop execution
 
 ---
 
 ## Performance Notes
 
-- Each business profile opens in a temporary browser tab
-- The tab is closed immediately after scraping
-- A small delay is added to avoid triggering CAPTCHA again
+- Each business opens in a temporary browser tab
+- Tabs are closed immediately after scraping
+- Small delays are added to avoid CAPTCHA retriggering
 - Large searches (e.g. 500 records) may take several minutes
 
-This is expected for browser-based scraping.
+This is expected for browser-based automation.
 
 ---
 
@@ -261,7 +287,7 @@ This is expected for browser-based scraping.
 - CAPTCHA must be solved manually
 - Resume-after-crash is not implemented
 - Browser automation is slower than direct APIs
-- Full registry enumeration without search input is impossible
+- Full registry enumeration without a search term is not possible
 
 ---
 
