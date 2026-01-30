@@ -6,25 +6,46 @@ This project is a Python web scraper that extracts business registry records fro
 
 https://scraping-trial-test.vercel.app
 
-The website uses:
-- Dynamic (client-side) rendering
+The website includes:
+- Dynamic (client-side) rendering (React / Next.js)
 - Pagination
 - Google reCAPTCHA
 
 Because of these constraints, Selenium is used to simulate real user behavior and reliably extract data.
 
 The script:
-- Accepts a search term
-- Navigates all result pages
+- Accepts a user-provided search term
+- Navigates through all result pages
 - Opens each business profile
 - Extracts detailed business and registered agent information
-- Saves the results to **JSON** and **CSV**
+- Saves results to both JSON and CSV formats
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [What Data Is Extracted](#what-data-is-extracted)
+- [Output Files](#output-files)
+- [Requirements](#requirements)
+- [Version Information](#version-information)
+- [Step-by-Step Installation (Beginner Friendly)](#step-by-step-installation-beginner-friendly)
+- [How to Run the Script](#how-to-run-the-script)
+- [Search Term Rules](#search-term-rules)
+- [Pagination Handling](#pagination-handling)
+- [Error Handling & Logging](#error-handling--logging)
+- [Performance Notes](#performance-notes)
+- [Limitations](#limitations)
+- [Repository Structure](#repository-structure)
+- [Versioning](#versioning)
+- [Authors-notes](#authors-notes)
+- [Author](#author)
 
 ---
 
 ## What Data Is Extracted
 
-For each business, the scraper collects:
+For each business, the scraper extracts the following fields from the **Business Profile** page:
 
 - Business Name
 - Registration ID
@@ -34,16 +55,16 @@ For each business, the scraper collects:
 - Registered Agent Address
 - Registered Agent Email (if available)
 
-All data comes directly from the **Business Profile** page.
+No fields are guessed or fabricated. All data is scraped directly from the site.
 
 ---
 
 ## Output Files
 
-After the script finishes, two files are created in the project folder:
+After execution, two output files are created in the project directory.
 
-### `output.json`
-Example:
+### output.json (example)
+
 ```json
 {
   "business_name": "Silver Tech CORP",
@@ -56,12 +77,11 @@ Example:
 }
 ```
 
-### `output.csv`
-Example:
+### output.csv (example)
 
-| business_name    | registration_id | status | filing_date | agent_name | agent_address | agent_email |
-|------------------|-----------------|--------|-------------|------------|---------------|-------------|
-| Silver Tech CORP | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com |
+| business_name     | registration_id | status | filing_date | agent_name | agent_address  | agent_email              |
+|-------------------|-----------------|--------|-------------|------------|----------------|--------------------------|
+| Silver Tech CORP  | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com   |
 
 Each row represents one business entity.
 
@@ -69,114 +89,80 @@ Each row represents one business entity.
 
 ## Requirements
 
-Before running the script, make sure you have:
+Before running the script, ensure you have:
 
 - A computer (Windows, macOS, or Linux)
 - Internet connection
+- Python 3.x
 - Mozilla Firefox browser
-- Python 3.x installed
-
-No prior programming experience is required to **run** the script.
+- GeckoDriver (Firefox WebDriver)
+- Git (optional, for cloning)
 
 ---
 
-## Step-by-Step Installation (Beginner Friendly)
+### GeckoDriver Requirement (Important)
 
-### Step 1: Install Python
+This project uses Selenium with Mozilla Firefox.
 
-1. Open your web browser
-2. Go to: https://www.python.org/downloads/
-3. Download **Python 3.x**
-4. During installation:
-   - ✔ Check **“Add Python to PATH”**
-5. Finish installation
+You must have **geckodriver** installed and available in your system PATH.
 
-Verify installation:
+Download GeckoDriver from:
+https://github.com/mozilla/geckodriver/releases
 
-- Open **Command Prompt** (Windows) or **Terminal** (macOS/Linux)
-- Type:
-```bash
-python --version
+After installation, ensure that running the following command works in your terminal:
+
 ```
-
----
-
-### Step 2: Install Firefox
-
-1. Go to: https://www.mozilla.org/firefox/
-2. Download and install Firefox
-
----
-
-### Step 3: Install GeckoDriver (Required)
-
-GeckoDriver allows Python to control the Firefox browser.
-
-1. Go to:
-   https://github.com/mozilla/geckodriver/releases
-2. Download the version for your operating system
-3. Extract the file
-
-#### Add GeckoDriver to PATH (Recommended)
-
-- **Windows**:
-  - Place `geckodriver.exe` in:
-    ```
-    C:\Windows\
-    ```
-  OR add its folder to your system PATH
-
-- **macOS / Linux**:
-  ```bash
-  sudo mv geckodriver /usr/local/bin/
-  sudo chmod +x /usr/local/bin/geckodriver
-  ```
-
-Verify:
-```bash
 geckodriver --version
 ```
 
 ---
 
-### Step 4: Open a Terminal / Command Prompt
+## Version Information
 
-- **Windows**:
-  - Press `Windows + R`
-  - Type `cmd`
-  - Press Enter
+This repository uses **Semantic Versioning**.
 
-- **macOS**:
-  - Press `Command + Space`
-  - Type `Terminal`
-  - Press Enter
+The latest stable release is:
 
-- **Linux**:
-  - Open your terminal application
+**v1.3.0**
 
-All commands below are typed **inside this window**.
+This version includes:
+- Full business profile scraping
+- Registered agent extraction
+- JSON and CSV output
+- Pagination stability improvements
+- Performance optimizations
 
 ---
 
-### Step 5: Download the Project (Clone the Repository)
+## Step-by-Step Installation (Beginner Friendly)
 
-In the terminal window, type:
+### Option A: Download the Stable Version (No Git Required)
+
+1. Open your browser
+2. Go to: https://github.com/Shnxxx/scraping-trial-test
+3. Click **Tags**
+4. Select **v1.3.0**
+5. Click **Code → Download ZIP**
+6. Extract the ZIP file
+7. Open a terminal **inside the extracted folder**
+
+---
+
+### Option B: Clone Using Git
+
+Open a terminal or command prompt and type:
 
 ```bash
 git clone https://github.com/Shnxxx/scraping-trial-test.git
-```
-
-Then press **Enter**.
-
-Move into the project folder:
-
-```bash
 cd scraping-trial-test
+git checkout v1.3.0
 ```
 
 ---
 
-### Step 6 (Optional but Recommended): Create a Virtual Environment
+### (Optional but Recommended) Create a Virtual Environment
+
+In the terminal, inside the project folder, type:
 
 ```bash
 python -m venv .venv
@@ -184,21 +170,19 @@ python -m venv .venv
 
 Activate it:
 
-- **Windows**:
+**Windows**
 ```bash
 .venv\Scripts\activate
 ```
 
-- **macOS / Linux**:
+**macOS / Linux**
 ```bash
 source .venv/bin/activate
 ```
 
-You will see `(.venv)` in the terminal.
-
 ---
 
-### Step 7: Install Required Libraries
+### Install Required Python Library
 
 ```bash
 pip install selenium
@@ -208,27 +192,24 @@ pip install selenium
 
 ## How to Run the Script
 
-From inside the project folder, type:
+In the terminal (inside the project folder):
 
 ```bash
 python scraper.py
 ```
 
----
-
-## What Will Happen
+### What Happens Next
 
 1. Firefox opens automatically
 2. A CAPTCHA appears
-3. Solve the CAPTCHA **manually**
-4. Return to the terminal and press **ENTER**
+3. Solve the CAPTCHA manually
+4. Return to the terminal and press ENTER
 5. Enter a search term (minimum 3 characters)
    - Press ENTER to use the default `LLC`
-6. The script:
-   - Navigates all pages
-   - Opens each business profile
-   - Extracts data
-7. Files `output.json` and `output.csv` are created
+6. The script navigates all pages and business profiles
+7. Results are saved to:
+   - `output.json`
+   - `output.csv`
 
 ---
 
@@ -243,7 +224,7 @@ Default:
 LLC
 ```
 
-Other valid examples:
+Examples:
 ```
 Tech
 Silver TECH
@@ -253,32 +234,32 @@ Silver TECH
 
 ## Pagination Handling
 
-- The site displays results across multiple pages (e.g. “Page 1 of 25”)
-- Page transitions are detected using stable UI text
+- The site displays results across multiple pages (e.g., “Page 1 of 25”)
+- The script detects page changes using stable UI text
 - All pages are processed automatically
 
 ---
 
 ## Error Handling & Logging
 
-- Explicit waits handle dynamic content
-- Optional fields (agent email) are handled safely
+- Explicit waits handle dynamic content loading
+- Optional fields (e.g., agent email) are handled safely
 - Errors are logged to:
 ```
 scraper.log
 ```
-- One failed business does not stop execution
+- A failed business does not stop the script
 
 ---
 
 ## Performance Notes
 
-- Each business opens in a temporary browser tab
+- Each business profile opens in a temporary browser tab
 - Tabs are closed immediately after scraping
-- Small delays are added to avoid CAPTCHA retriggering
-- Large searches (e.g. 500 records) may take several minutes
+- A short delay is added to avoid CAPTCHA re-triggering
+- Large searches (e.g., 500 businesses) may take several minutes
 
-This is expected for browser-based automation.
+This is expected for browser-based scraping.
 
 ---
 
@@ -307,37 +288,35 @@ scraping-trial-test/
 
 ## Versioning
 
-Semantic Versioning is used.
+- v1.0.0 – Initial working scraper
+- v1.1.0 – Business profile navigation
+- v1.2.0 – CSV output and stability fixes
+- v1.3.0 – Agent scraping, performance tuning, documentation polish
 
-- **v1.0.0** – Initial working scraper
-- **v1.1.0** – Business profile & agent scraping
-- **v1.2.0** – Performance tuning, CSV output, stability improvements
-
-The `main` branch always reflects the latest stable version.
+The `main` branch always reflects the latest stable release.
 
 ---
 
 ## Author’s Notes
 
-### Why Selenium
-The site uses dynamic rendering, client-side pagination, and reCAPTCHA.  
-A `requests + BeautifulSoup` approach would not reliably capture rendered content.
+This solution was implemented with an emphasis on correctness, clarity, and respect for the constraints imposed by the target website.
+
+### Choice of Selenium
+The site uses dynamic rendering, client-side pagination, and reCAPTCHA. A traditional requests + BeautifulSoup approach would not reliably capture rendered content or user interactions.
 
 ### CAPTCHA Behavior
-After the initial CAPTCHA is solved, the browser session remains valid for a limited time.  
-The script relies on this behavior and does **not** attempt to bypass CAPTCHA.
+After the initial CAPTCHA is solved, the browser session remains valid for a limited time. The script relies on this behavior and does not attempt to bypass CAPTCHA protections.
 
 ### Pagination Strategy
-Waiting directly on table rows caused stale element errors due to React re-renders.  
-Stable page indicator text was used instead.
+Directly waiting on table rows caused stale element errors due to React re-renders. Stable page indicators were used instead.
 
 ### Resume Capability
-Not implemented intentionally.  
-CAPTCHA-protected browser sessions make persistent resume logic complex and out of scope.
+Persistent resume logic was intentionally not implemented. CAPTCHA-protected browser sessions make durable resume behavior complex and out of scope.
 
 ### Search Scope
-The site enforces a minimum search length and disallows wildcard searches.  
-The scraper operates strictly within those constraints.
+The site enforces a minimum search length and disallows wildcard searches. The scraper operates strictly within those constraints.
+
+Overall, the goal is a clean, transparent, and responsible scraper that reflects real-world constraints.
 
 ---
 
