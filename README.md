@@ -11,7 +11,7 @@ The website:
 - Uses multi-page result navigation
 - Serves business listings and profiles via server-rendered HTML
 
-Although the content is technically accessible via direct HTTP requests, **Selenium was intentionally chosen** to simulate real browser interaction and provide resilience against potential future changes such as client-side rendering, JavaScript-driven navigation, or basic bot-detection mechanisms.
+Although the content is currently accessible via direct HTTP requests, **Selenium was intentionally chosen** as the scraping interface to model real browser behavior and to avoid relying on assumptions about the site’s current or future rendering and data-delivery strategy.
 
 The script:
 - Accepts a user-provided search term
@@ -55,7 +55,8 @@ For each business, the scraper extracts the following fields from the **Business
 - Registered Agent Address
 - Registered Agent Email (if available)
 
-No fields are guessed or fabricated. All data is scraped directly from the site.
+All fields are scraped directly from the site.  
+No data is inferred, synthesized, or fabricated.
 
 ---
 
@@ -79,72 +80,43 @@ After execution, two output files are created in the project directory.
 
 ### output.csv (example)
 
-| business_name     | registration_id | status | filing_date | agent_name | agent_address  | agent_email            |
-|-------------------|-----------------|--------|-------------|------------|----------------|------------------------|
-| Silver Tech CORP  | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com |
-
-Each row represents one business entity.
+| business_name    | registration_id | status | filing_date | agent_name | agent_address  | agent_email            |
+|------------------|-----------------|--------|-------------|------------|----------------|------------------------|
+| Silver Tech CORP | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com |
 
 ---
 
 ## Requirements
 
-Before running the script, ensure you have:
-
-- A computer (Windows, macOS, or Linux)
-- Internet connection
 - Python 3.x
-- Mozilla Firefox browser
+- Mozilla Firefox
 - GeckoDriver (Firefox WebDriver)
-- Git (optional, for cloning)
-
----
-
-### GeckoDriver Requirement (Important)
-
-This project uses Selenium with Mozilla Firefox.
-
-You must have **geckodriver** installed and available in your system PATH.
-
-Download GeckoDriver from:
-https://github.com/mozilla/geckodriver/releases
-
-After installation, verify with:
-
-```
-geckodriver --version
-```
+- Internet connection
+- Git (optional)
 
 ---
 
 ## Version Information
 
-This repository uses **Semantic Versioning**.
+This repository follows **Semantic Versioning**.
 
-The latest stable release is:
+**Latest stable release:**  
+**v1.3.1**
 
-**v1.3.0**
-
-This version includes:
-- Full business profile scraping
-- Registered agent extraction
-- JSON and CSV output
-- Pagination stability improvements
-- Performance optimizations
+v1.3.1 is a documentation-only update that corrects technical descriptions and clarifies architectural and tooling decisions.  
+No functional or behavioral changes were introduced relative to v1.3.0.
 
 ---
 
 ## Step-by-Step Installation (Beginner Friendly)
 
-### Option A: Download the Stable Version (No Git Required)
+### Option A: Download the Latest Stable Release
 
-1. Open your browser
-2. Go to: https://github.com/Shnxxx/scraping-trial-test
-3. Click **Tags**
-4. Select **v1.3.0**
-5. Click **Code → Download ZIP**
-6. Extract the ZIP file
-7. Open a terminal inside the extracted folder
+1. Go to: https://github.com/Shnxxx/scraping-trial-test
+2. Open the **Releases** section
+3. Download the latest release archive
+4. Extract the files
+5. Open a terminal inside the project directory
 
 ---
 
@@ -153,12 +125,12 @@ This version includes:
 ```bash
 git clone https://github.com/Shnxxx/scraping-trial-test.git
 cd scraping-trial-test
-git checkout v1.3.0
+git checkout v1.3.1
 ```
 
 ---
 
-### (Optional but Recommended) Create a Virtual Environment
+### (Optional) Create a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -178,7 +150,7 @@ source .venv/bin/activate
 
 ---
 
-### Install Required Python Library
+### Install Dependencies
 
 ```bash
 pip install selenium
@@ -192,15 +164,10 @@ pip install selenium
 python scraper.py
 ```
 
-### What Happens Next
-
-1. Firefox opens automatically
+1. Firefox launches automatically
 2. Enter a search term (minimum 3 characters)
-   - Press ENTER to use the default `LLC`
-3. The script navigates all pages and business profiles
-4. Results are saved to:
-   - `output.json`
-   - `output.csv`
+3. The script navigates all result pages and business profiles
+4. Results are written to `output.json` and `output.csv`
 
 ---
 
@@ -210,55 +177,39 @@ python scraper.py
 - Empty searches are not allowed
 - Wildcard searches are not supported
 
-Default:
-```
-LLC
-```
-
-Examples:
-```
-Tech
-Silver TECH
-```
-
 ---
 
 ## Pagination Handling
 
-- Results are spread across multiple pages (e.g., “Page 1 of 25”)
-- The script detects page transitions using stable UI indicators
-- All pages are processed automatically
+- URL-based pagination
+- All result pages are processed sequentially
+- Stable page-level indicators are used to avoid stale element references caused by frontend re-renders
 
 ---
 
 ## Error Handling & Logging
 
-- Explicit waits are used to ensure DOM readiness
-- Optional fields (e.g., agent email) are handled safely
-- Errors are logged to:
-```
-scraper.log
-```
-- A failed business record does not halt execution
+- Explicit waits ensure DOM readiness
+- Optional fields are handled safely
+- Errors are logged to `scraper.log`
+- Individual record failures do not halt execution
 
 ---
 
 ## Performance Notes
 
-- Each business profile is opened sequentially
-- Browser tabs are closed immediately after extraction
-- Browser-based scraping is slower than direct HTTP requests
-
-This tradeoff is intentional for reliability and clarity.
+- Browser automation is inherently slower than direct HTTP scraping
+- This tradeoff is intentional and accepted
+- The implementation prioritizes correctness, transparency, and resilience over raw throughput
 
 ---
 
 ## Limitations
 
-- Slower than a requests-based scraper
 - Requires a local browser and WebDriver
+- Slower than a requests-based scraper
 - Resume-after-crash is not implemented
-- Full registry enumeration without a search term is not possible
+- Full registry enumeration without a search term is not supported
 
 ---
 
@@ -281,32 +232,40 @@ scraping-trial-test/
 - v1.0.0 – Initial working scraper
 - v1.1.0 – Business profile navigation
 - v1.2.0 – CSV output and stability fixes
-- v1.3.0 – Agent scraping, performance tuning, documentation polish
-
-The `main` branch always reflects the latest stable release.
+- v1.3.0 – Agent scraping and performance tuning
+- v1.3.1 – Documentation corrections and clarifications
 
 ---
 
 ## Author’s Notes
 
-### Choice of Selenium
+### Why Selenium Instead of requests + BeautifulSoup
 
-While the site currently serves server-rendered HTML that could be scraped using `requests` and `BeautifulSoup`, Selenium was selected deliberately to:
+While the site’s current HTML is server-rendered and technically scrapeable via
+`requests` and `BeautifulSoup`, Selenium was selected based on **engineering risk
+management**, not minimum technical feasibility.
 
-- Mirror real user navigation
-- Avoid assumptions about rendering strategy
-- Remain resilient to future frontend changes
-- Eliminate the need for reverse-engineering internal APIs
+Specifically:
 
-This prioritizes robustness and clarity over raw performance.
+- The site is built with React / Next.js, where rendering strategy (SSR, SSG, CSR)
+  can change without altering visible browser behavior but can silently break
+  request-based scrapers.
+- Pagination and navigation are expressed through user-facing UI flows rather than
+  a documented or stable backend API.
+- A browser-driven approach avoids assumptions about where data originates, how it
+  is rendered, or whether it will remain present in initial HTML responses.
+- Selenium ensures continued correctness if content delivery shifts toward client-side
+  rendering, hydration, or JavaScript-triggered navigation.
 
-### Pagination Strategy
-
-Directly waiting on table rows caused stale element references due to React re-renders. Stable page-level indicators were used instead.
+In this context, Selenium intentionally trades performance for robustness and
+maintainability. This mirrors real-world scraping constraints, where browser
+automation is often the only stable interface available.
 
 ### Scope Decisions
 
-Persistent resume logic and API-based scraping were intentionally excluded to keep the solution focused, transparent, and aligned with browser-based scraping constraints.
+Persistent resume logic and API-based scraping were intentionally excluded to keep
+the solution focused, transparent, and aligned with browser-oriented scraping
+constraints.
 
 ---
 
