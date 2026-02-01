@@ -6,12 +6,12 @@ This project is a Python web scraper that extracts business registry records fro
 
 https://scraping-trial-test.vercel.app
 
-The website includes:
-- Dynamic (client-side) rendering (React / Next.js)
-- Pagination
-- Google reCAPTCHA
+The website:
+- Is built with React / Next.js
+- Uses multi-page result navigation
+- Serves business listings and profiles via server-rendered HTML
 
-Because of these constraints, Selenium is used to simulate real user behavior and reliably extract data.
+Although the content is technically accessible via direct HTTP requests, **Selenium was intentionally chosen** to simulate real browser interaction and provide resilience against potential future changes such as client-side rendering, JavaScript-driven navigation, or basic bot-detection mechanisms.
 
 The script:
 - Accepts a user-provided search term
@@ -38,7 +38,7 @@ The script:
 - [Limitations](#limitations)
 - [Repository Structure](#repository-structure)
 - [Versioning](#versioning)
-- [Authors-notes](#authors-notes)
+- [Author’s Notes](#authors-notes)
 - [Author](#author)
 
 ---
@@ -79,9 +79,9 @@ After execution, two output files are created in the project directory.
 
 ### output.csv (example)
 
-| business_name     | registration_id | status | filing_date | agent_name | agent_address  | agent_email              |
-|-------------------|-----------------|--------|-------------|------------|----------------|--------------------------|
-| Silver Tech CORP  | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com   |
+| business_name     | registration_id | status | filing_date | agent_name | agent_address  | agent_email            |
+|-------------------|-----------------|--------|-------------|------------|----------------|------------------------|
+| Silver Tech CORP  | SD0000001       | Active | 1999-12-04  | Sara Smith | 1545 Maple Ave | sara.smith@example.com |
 
 Each row represents one business entity.
 
@@ -109,7 +109,7 @@ You must have **geckodriver** installed and available in your system PATH.
 Download GeckoDriver from:
 https://github.com/mozilla/geckodriver/releases
 
-After installation, ensure that running the following command works in your terminal:
+After installation, verify with:
 
 ```
 geckodriver --version
@@ -144,13 +144,11 @@ This version includes:
 4. Select **v1.3.0**
 5. Click **Code → Download ZIP**
 6. Extract the ZIP file
-7. Open a terminal **inside the extracted folder**
+7. Open a terminal inside the extracted folder
 
 ---
 
 ### Option B: Clone Using Git
-
-Open a terminal or command prompt and type:
 
 ```bash
 git clone https://github.com/Shnxxx/scraping-trial-test.git
@@ -161,8 +159,6 @@ git checkout v1.3.0
 ---
 
 ### (Optional but Recommended) Create a Virtual Environment
-
-In the terminal, inside the project folder, type:
 
 ```bash
 python -m venv .venv
@@ -192,8 +188,6 @@ pip install selenium
 
 ## How to Run the Script
 
-In the terminal (inside the project folder):
-
 ```bash
 python scraper.py
 ```
@@ -201,13 +195,10 @@ python scraper.py
 ### What Happens Next
 
 1. Firefox opens automatically
-2. A CAPTCHA appears
-3. Solve the CAPTCHA manually
-4. Return to the terminal and press ENTER
-5. Enter a search term (minimum 3 characters)
+2. Enter a search term (minimum 3 characters)
    - Press ENTER to use the default `LLC`
-6. The script navigates all pages and business profiles
-7. Results are saved to:
+3. The script navigates all pages and business profiles
+4. Results are saved to:
    - `output.json`
    - `output.csv`
 
@@ -234,40 +225,39 @@ Silver TECH
 
 ## Pagination Handling
 
-- The site displays results across multiple pages (e.g., “Page 1 of 25”)
-- The script detects page changes using stable UI text
+- Results are spread across multiple pages (e.g., “Page 1 of 25”)
+- The script detects page transitions using stable UI indicators
 - All pages are processed automatically
 
 ---
 
 ## Error Handling & Logging
 
-- Explicit waits handle dynamic content loading
+- Explicit waits are used to ensure DOM readiness
 - Optional fields (e.g., agent email) are handled safely
 - Errors are logged to:
 ```
 scraper.log
 ```
-- A failed business does not stop the script
+- A failed business record does not halt execution
 
 ---
 
 ## Performance Notes
 
-- Each business profile opens in a temporary browser tab
-- Tabs are closed immediately after scraping
-- A short delay is added to avoid CAPTCHA re-triggering
-- Large searches (e.g., 500 businesses) may take several minutes
+- Each business profile is opened sequentially
+- Browser tabs are closed immediately after extraction
+- Browser-based scraping is slower than direct HTTP requests
 
-This is expected for browser-based scraping.
+This tradeoff is intentional for reliability and clarity.
 
 ---
 
 ## Limitations
 
-- CAPTCHA must be solved manually
+- Slower than a requests-based scraper
+- Requires a local browser and WebDriver
 - Resume-after-crash is not implemented
-- Browser automation is slower than direct APIs
 - Full registry enumeration without a search term is not possible
 
 ---
@@ -299,24 +289,24 @@ The `main` branch always reflects the latest stable release.
 
 ## Author’s Notes
 
-This solution was implemented with an emphasis on correctness, clarity, and respect for the constraints imposed by the target website.
-
 ### Choice of Selenium
-The site uses dynamic rendering, client-side pagination, and reCAPTCHA. A traditional requests + BeautifulSoup approach would not reliably capture rendered content or user interactions.
 
-### CAPTCHA Behavior
-After the initial CAPTCHA is solved, the browser session remains valid for a limited time. The script relies on this behavior and does not attempt to bypass CAPTCHA protections.
+While the site currently serves server-rendered HTML that could be scraped using `requests` and `BeautifulSoup`, Selenium was selected deliberately to:
+
+- Mirror real user navigation
+- Avoid assumptions about rendering strategy
+- Remain resilient to future frontend changes
+- Eliminate the need for reverse-engineering internal APIs
+
+This prioritizes robustness and clarity over raw performance.
 
 ### Pagination Strategy
-Directly waiting on table rows caused stale element errors due to React re-renders. Stable page indicators were used instead.
 
-### Resume Capability
-Persistent resume logic was intentionally not implemented. CAPTCHA-protected browser sessions make durable resume behavior complex and out of scope.
+Directly waiting on table rows caused stale element references due to React re-renders. Stable page-level indicators were used instead.
 
-### Search Scope
-The site enforces a minimum search length and disallows wildcard searches. The scraper operates strictly within those constraints.
+### Scope Decisions
 
-Overall, the goal is a clean, transparent, and responsible scraper that reflects real-world constraints.
+Persistent resume logic and API-based scraping were intentionally excluded to keep the solution focused, transparent, and aligned with browser-based scraping constraints.
 
 ---
 
